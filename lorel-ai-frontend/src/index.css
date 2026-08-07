@@ -208,7 +208,7 @@ img {
   position: relative;
   max-width: 1000px;
   margin: 0 auto;
-  max-height: 560px;
+  aspect-ratio: 1000 / 430;
   overflow: hidden;
   border-radius: 4px;
 }
@@ -216,15 +216,18 @@ img {
 .paper-container > img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 47%;
 }
 
 .paper-text {
   position: absolute;
-  inset: 8% 9% auto 9%;
+  inset: 13% 11%;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  justify-content: center;
+  gap: 16px;
 }
 
 .step {
@@ -452,6 +455,7 @@ img {
   }
 
   .paper-container {
+    aspect-ratio: auto;
     max-height: none;
     background: var(--cream);
     border: 1px solid rgba(46, 42, 46, 0.1);
