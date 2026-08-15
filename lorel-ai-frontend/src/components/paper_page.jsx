@@ -1,4 +1,4 @@
-import paper from "../assets/paper.svg";
+import paper from "../assets/paper_strip.svg";
 import response from "../assets/response_image.svg";
 import info from "../assets/info2_img.svg";
 
@@ -7,8 +7,7 @@ function PaperPage(){
         <section className="paper-page">
             <p className="small-heading">how it works</p>
             <h1 className= "big_heading">Three steps to a source you can trust.</h1>
-            <div className="paper-container">
-                <img src={paper}/>
+            <div className="paper-container" style={{ backgroundImage: `url(${paper})` }}>
                  <div className="paper-text">
                     <div className="step">
                         <h3>Choose your books</h3>
@@ -47,7 +46,7 @@ function PaperPage(){
                 <p className="small-heading">for publishers <br />
                                             and consumers</p>
                 <h1 className="big_heading">Your books, your answers.</h1>
-                <p>No Books enter without a license.
+                <p>No books enter without a license.
                 <br /> 
                     Every answer names the source. So
                 <br />

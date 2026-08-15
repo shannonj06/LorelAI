@@ -2,11 +2,12 @@
   /* Design tokens from Figma */
   --cream: #fbf7f0;
   --ink: #2e2a2e;
-  --accent: #8a68a2;
-  --accent-italic: #8f6ea6;
-  --label: #826d82;
-  --button: #e7e3ea;
-  --button-hover: #ddd7e4;
+  --accent: #6b4a86;
+  --accent-italic: #714f8d;
+  --label: #574360;
+  --button: #5c3d78;
+  --button-hover: #472c5f;
+  --button-text: #fdfbf8;
   --lavender: #e9e4ee;
 
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
@@ -96,7 +97,7 @@ img {
 .navbar {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 22px 48px;
+  padding: 16px 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,17 +106,19 @@ img {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
+/* The mark carries the brand; the wordmark is secondary to it. */
 .logo img {
-  width: 22px;
-  height: 22px;
+  height: 52px;
+  width: auto;
 }
 
 .logo span {
   font-family: var(--serif);
-  font-size: 24px;
+  font-size: 19px;
+  letter-spacing: 0.2px;
   color: var(--ink);
 }
 
@@ -140,7 +143,8 @@ img {
 .hero-button {
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--ink);
+  font-weight: 500;
+  color: var(--button-text);
   background: var(--button);
   border: none;
   border-radius: 24px;
@@ -183,8 +187,14 @@ img {
   text-transform: uppercase;
   letter-spacing: 2.6px;
   font-size: 13px;
+  font-weight: 500;
   color: var(--label);
-  margin: 0 0 34px;
+  margin: 0 0 28px;
+}
+
+/* Waitlist form promoted into the hero, directly under the subtitle */
+.hero-form {
+  margin: 0 auto 34px;
 }
 
 .hero-buttons {
@@ -204,54 +214,41 @@ img {
   padding: 40px 24px 80px;
 }
 
+/* The torn sheet stretches to whatever height the steps need, so the paper
+   always backs the text instead of being cropped away on smaller screens. */
 .paper-container {
-  position: relative;
   max-width: 1000px;
   margin: 0 auto;
-  aspect-ratio: 1000 / 430;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.paper-container > img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 47%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
 }
 
 .paper-text {
-  position: absolute;
-  inset: 13% 11%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
-}
-
-.step {
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(46, 42, 46, 0.12);
-}
-
-.step:last-child {
-  border-bottom: none;
+  padding: 6% 11% 7%;
+  /* One consistent rhythm between steps — no per-step padding or rules,
+     so the only lines on the page are the ones printed on the paper. */
+  gap: clamp(14px, 2.2vw, 22px);
 }
 
 .step h3 {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: clamp(17px, 2.15vw, 22px);
+  line-height: 1.2;
   color: var(--ink);
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 }
 
 .step p {
   font-family: var(--mono);
-  font-size: 12.5px;
+  font-size: clamp(10.5px, 1.25vw, 13px);
   line-height: 1.5;
   color: var(--label);
-  max-width: 560px;
+  max-width: 54ch;
+  margin: 0;
 }
 
 /* ---------- Product / info sections ---------- */
@@ -349,7 +346,8 @@ img {
 .wait-form button {
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--ink);
+  font-weight: 500;
+  color: var(--button-text);
   background: var(--button);
   border: none;
   border-radius: 40px;
@@ -361,6 +359,25 @@ img {
 
 .wait-form button:hover {
   background: var(--button-hover);
+}
+
+.wait-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.wait-message {
+  font-family: var(--mono);
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+
+.wait-message--success {
+  color: #2f7d4f;
+}
+
+.wait-message--error {
+  color: #b23c3c;
 }
 
 /* ---------- Footer ---------- */
@@ -381,18 +398,19 @@ img {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
 .footer-logo img {
-  width: 22px;
-  height: 22px;
+  height: 58px;
+  width: auto;
 }
 
 .footer-logo span {
   font-family: var(--serif);
-  font-size: 24px;
+  font-size: 20px;
+  letter-spacing: 0.2px;
   color: var(--ink);
 }
 
@@ -439,7 +457,15 @@ img {
 /* ---------- Responsive ---------- */
 @media (max-width: 820px) {
   .navbar {
-    padding: 18px 24px;
+    padding: 14px 24px;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .footer-logo img {
+    height: 46px;
   }
 
   .nav-links {
@@ -454,21 +480,18 @@ img {
     flex-wrap: wrap;
   }
 
-  .paper-container {
-    aspect-ratio: auto;
-    max-height: none;
-    background: var(--cream);
-    border: 1px solid rgba(46, 42, 46, 0.1);
-  }
-
-  .paper-container > img {
-    display: none;
-  }
-
   .paper-text {
-    position: static;
-    inset: auto;
-    padding: 28px 24px;
+    padding: 11% 12%;
+    gap: 20px;
+  }
+
+  /* Off the paper crop, text is no longer height-constrained */
+  .step h3 {
+    font-size: 20px;
+  }
+
+  .step p {
+    font-size: 13px;
   }
 
   .wait-card {

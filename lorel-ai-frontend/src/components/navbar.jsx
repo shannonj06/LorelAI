@@ -1,16 +1,13 @@
-import airplane from "../assets/paper-airplane.svg";
+import logo from "../assets/lorelai_logo_transparent.svg";
 
 function Navbar(){
     return(
         <nav className="navbar">
             <div className="logo">
-                <img src={airplane} alt=""/>
+                <img src={logo} alt=""/>
                 <span>LorelAI</span>
             </div>
             <div className="nav-links">
-                <a href="#">Product</a>
-                <a href="#">Pricing</a>
-                <a href="#">How it works</a>
                 <button>Join Waitlist</button>
             </div>
         </nav>
