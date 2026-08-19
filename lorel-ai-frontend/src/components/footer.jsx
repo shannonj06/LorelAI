@@ -5,8 +5,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-brand">
         <div className="footer-logo">
-          <img src={logo} alt="" />
-          <span>LorelAI</span>
+          <img src={logo} alt="LorelAI" />
         </div>
 
         <p className="footer-description">

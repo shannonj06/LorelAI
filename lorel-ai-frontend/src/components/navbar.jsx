@@ -12,8 +12,7 @@ function Navbar(){
     return(
         <nav className="navbar">
             <div className="logo">
-                <img src={logo} alt=""/>
-                <span>LorelAI</span>
+                <img src={logo} alt="LorelAI"/>
             </div>
             <div className="nav-links">
                 <button onClick={scrollToWaitlist}>Join Waitlist</button>

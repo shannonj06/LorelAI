@@ -106,20 +106,17 @@ img {
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
-/* The mark carries the brand; the wordmark is secondary to it. */
+/* The mark carries the brand on its own — no wordmark beside it. */
 .logo img {
-  height: 52px;
+  height: 76px;
   width: auto;
+  transition: transform 0.25s ease;
 }
 
-.logo span {
-  font-family: var(--serif);
-  font-size: 19px;
-  letter-spacing: 0.2px;
-  color: var(--ink);
+.logo img:hover {
+  transform: scale(1.04);
 }
 
 .nav-links {
@@ -398,20 +395,12 @@ img {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 16px;
 }
 
 .footer-logo img {
-  height: 58px;
+  height: 82px;
   width: auto;
-}
-
-.footer-logo span {
-  font-family: var(--serif);
-  font-size: 20px;
-  letter-spacing: 0.2px;
-  color: var(--ink);
 }
 
 .footer-description {
@@ -461,11 +450,11 @@ img {
   }
 
   .logo img {
-    height: 40px;
+    height: 56px;
   }
 
   .footer-logo img {
-    height: 46px;
+    height: 62px;
   }
 
   .nav-links {
