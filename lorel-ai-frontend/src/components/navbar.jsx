@@ -1,23 +1,26 @@
 import logo from "../assets/lorelai_logo_transparent.svg";
 
-function Navbar(){
-    function scrollToWaitlist(){
-        const section = document.getElementById("waitlist");
-        if (!section) return;
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Drop the cursor into the email field once we're there.
-        section.querySelector("input")?.focus({ preventScroll: true });
-    }
+function Navbar() {
+  function scrollToWaitlist() {
+    const section = document.getElementById("waitlist");
+    if (!section) return;
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Drop the cursor into the email field once we're there.
+    section.querySelector("input")?.focus({ preventScroll: true });
+  }
 
-    return(
-        <nav className="navbar">
-            <div className="logo">
-                <img src={logo} alt="LorelAI"/>
-            </div>
-            <div className="nav-links">
-                <button onClick={scrollToWaitlist}>Join Waitlist</button>
-            </div>
-        </nav>
-    );
+  return (
+    <nav className="navbar">
+      <div className="logo">
+        <img src={logo} alt="LorelAI" />
+      </div>
+      <div className="nav-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#difference">Why it's different</a>
+        <button onClick={scrollToWaitlist}>Join Waitlist</button>
+      </div>
+    </nav>
+  );
 }
-export default Navbar
+
+export default Navbar;
