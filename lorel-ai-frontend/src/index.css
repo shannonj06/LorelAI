@@ -249,13 +249,11 @@ img {
 }
 
 /* ---------- Product / info sections ---------- */
-.info_page_1,
 .info_page_2 {
   padding: 56px 24px;
   text-align: center;
 }
 
-.info_page_1 > p,
 .info_page_2 > p {
   font-family: var(--mono);
   font-size: 13px;
@@ -265,18 +263,45 @@ img {
   margin: 0 auto 36px;
 }
 
-.info_page_1 img,
-.info_page_2 img {
-  display: block;
+.license-card {
   width: 100%;
-  max-width: 860px;
-  height: auto;
+  max-width: 612px;
   margin: 0 auto;
+  padding: 30px 38px;
+  background: var(--cream);
   border-radius: 20px;
+  text-align: left;
 }
 
-.info_page_2 img {
-  max-width: 720px;
+.license-item + .license-item {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(87, 67, 96, 0.16);
+}
+
+.license-eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 2.6px;
+  font-size: 11px;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+.license-item h3 {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.6vw, 26px);
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.license-detail {
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.25vw, 13px);
+  line-height: 1.5;
+  color: var(--label);
+  margin: 0;
 }
 
 /* ---------- Waitlist ---------- */
@@ -481,6 +506,10 @@ img {
 
   .step p {
     font-size: 13px;
+  }
+
+  .license-card {
+    padding: 26px 24px;
   }
 
   .wait-card {

@@ -1,6 +1,4 @@
 import paper from "../assets/paper_strip.svg";
-import response from "../assets/response_image.svg";
-import info from "../assets/info2_img.svg";
 
 function PaperPage() {
   return (
@@ -39,16 +37,6 @@ function PaperPage() {
         </div>
       </div>
 
-      <div className="info_page_1">
-        <p className="small-heading">the product</p>
-        <h1 className="big_heading">Answers with backup.</h1>
-        <p>
-          A grounded answer on the left, the passage it was generated from on the
-          right. Nothing appears on one side without the other.
-        </p>
-        <img src={response} alt="A LorelAI answer shown beside its source passage" />
-      </div>
-
       <div className="info_page_2">
         <p className="small-heading">
           for publishers <br />
@@ -60,7 +48,23 @@ function PaperPage() {
           author it came from. Publishers get attribution and a revenue line
           instead of a scraped corpus.
         </p>
-        <img src={info} alt="How licensed titles flow into LorelAI" />
+        <div className="license-card">
+          <div className="license-item">
+            <p className="license-eyebrow">protected</p>
+            <h3>Licensed only</h3>
+            <p className="license-detail">
+              Books are cited, never reproduced wholesale or scraped.
+            </p>
+          </div>
+
+          <div className="license-item">
+            <p className="license-eyebrow">attributed</p>
+            <h3>Named every time</h3>
+            <p className="license-detail">
+              Title, author, and page shown on every answer.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
