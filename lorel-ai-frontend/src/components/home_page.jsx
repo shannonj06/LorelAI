@@ -51,7 +51,7 @@ function HomePage({ onOpenSmokeMirrors }) {
           className="hero-secondary"
           onClick={onOpenSmokeMirrors}
         >
-          See how it works →
+          Try the live demo →
         </button>
       </div>
 
