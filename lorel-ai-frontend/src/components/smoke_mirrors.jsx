@@ -3,44 +3,63 @@ import book1 from "../assets/lorelaimg1.jpg";
 import book2 from "../assets/lorelaimg2.jpg";
 import book3 from "../assets/lorelaimg3.jpg";
 
+const WHOLE_BRAIN = "The Whole-Brain Child";
+const NO_DRAMA = "No-Drama Discipline";
+const HOW_TO_TALK = "How to Talk So Kids Will Listen & Listen So Kids Will Talk";
+
 const BOOKS = [
-  { title: "The Whole-Brain Child", author: "Siegel & Bryson", img: book1 },
-  { title: "No-Drama Discipline", author: "Siegel & Bryson", img: book2 },
-  {
-    title: "How to Talk So Kids Will Listen & Listen So Kids Will Talk",
-    author: "Faber & Mazlish",
-    img: book3,
-  },
+  { title: WHOLE_BRAIN, author: "Siegel & Bryson", img: book1 },
+  { title: NO_DRAMA, author: "Siegel & Bryson", img: book2 },
+  { title: HOW_TO_TALK, author: "Faber & Mazlish", img: book3 },
 ];
 
+// Each question has a distinct, book-specific answer. Only the books a parent
+// has "loaded" get cited, so 2 loaded books produce 2 answers, 3 produce 3.
 const demoQuestions = [
   {
     id: 1,
     question:
       "My child gets completely overwhelmed by their emotions. How can I help them calm down?",
-    answer:
-      "When your child is overwhelmed, focus first on helping them feel safe and understood. Connecting with their emotions before trying to reason with them can help them calm down and become more receptive to guidance.",
-    sources: ["The Whole-Brain Child"],
+    answers: {
+      [WHOLE_BRAIN]:
+        "Big feelings mean the emotional right brain has taken over. Connect first — get down low, use a soothing tone, and reflect what they feel. Once they're calmer, engage the logical left brain by helping them name and retell what happened.",
+      [NO_DRAMA]:
+        "When emotions flood your child, the thinking part of their brain goes offline, so this isn't the moment to teach. Calm the storm first with warm, nonjudgmental connection; the lesson can wait until they're regulated enough to hear you.",
+      [HOW_TO_TALK]:
+        "Instead of dismissing or fixing the feeling, give it words: \"You seem really frustrated right now.\" Naming what a child feels — rather than arguing them out of it — helps them feel understood and begins to settle them.",
+    },
   },
   {
     id: 2,
     question:
       "My 5-year-old has tantrums whenever I say no. How should I handle them without giving in?",
-    answer:
-      "Try to stay calm and connect with your child emotionally while still maintaining the boundary. Discipline does not have to mean punishment. Once your child is calmer, you can redirect the moment toward understanding what happened and making a better choice next time.",
-    sources: ["No-Drama Discipline"],
+    answers: {
+      [WHOLE_BRAIN]:
+        "A tantrum is a downstairs-brain reaction, not a choice. Stay calm to keep your own upstairs brain online, acknowledge the want (\"You really wish you could have it\"), and hold the limit — engaging their thinking brain instead of matching their storm.",
+      [NO_DRAMA]:
+        "You can be kind and firm at once. Connect with the feeling behind the meltdown before you redirect, keep the boundary steady, and once they're calm, use the moment to teach a better way to handle disappointment. Discipline, not punishment.",
+      [HOW_TO_TALK]:
+        "Acknowledge the wish rather than the object: \"You wish you could have candy right now — a whole bowl of it!\" Granting the longing in fantasy often takes the heat out of the \"no\" in reality, while the limit itself stays in place.",
+    },
   },
   {
     id: 3,
     question:
       "How can I get my child to listen without yelling or repeating myself?",
-    answer:
-      "Instead of immediately giving commands or raising your voice, try describing what you see or what needs to be done in a clear, simple way. Acknowledging your child's feelings can also make them more willing to listen and cooperate.",
-    sources: [
-      "How to Talk So Kids Will Listen & Listen So Kids Will Talk",
-    ],
+    answers: {
+      [WHOLE_BRAIN]:
+        "Yelling triggers your child's defensive downstairs brain and shuts down listening. Connect first with eye contact and a calm cue, then make one short, clear request so their upstairs brain can actually process it and cooperate.",
+      [NO_DRAMA]:
+        "Repeating yourself and raising your voice invites a power struggle. Get close, connect, and give a single calm, specific direction — cooperation grows out of a felt sense of connection, not volume.",
+      [HOW_TO_TALK]:
+        "Try describing the problem instead of commanding: \"I see toys all over the floor.\" Or offer a choice, or say it in a single word — \"Toys!\" Describing what you see invites a child to work out what to do, so you don't have to nag.",
+    },
   },
 ];
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 function SmokeMirrors({ onBack }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -63,12 +82,12 @@ function SmokeMirrors({ onBack }) {
         <p className="small-heading">Interactive demo</p>
         <h1 className="big_heading">See how LorelAi answers</h1>
         <p className="section-lede">
-          Build your library, then ask a question. Every answer is grounded in
-          expert-authored books — and cited back to the one it came from.
+          Build your library, then ask a question. LorelAi answers only from the
+          books you've loaded — and cites each one it draws from.
         </p>
 
         <SelectBooks selectedBooks={selectedBooks} toggleBook={toggleBook} />
-        <ChatBot />
+        <ChatBot selectedBooks={selectedBooks} />
       </div>
     </section>
   );
@@ -92,7 +111,7 @@ function SelectBooks({ selectedBooks, toggleBook }) {
       <StepHeader
         number="1"
         title="Build your library"
-        hint="Select all the books so LorelAi can cite any of them in its answers."
+        hint="Load the books you want LorelAi to draw from — each loaded book can be cited."
       />
 
       <div className="smoke-books">
@@ -121,44 +140,25 @@ function SelectBooks({ selectedBooks, toggleBook }) {
         {selectedBooks.length > 0
           ? `Library ready — ${selectedBooks.length} book${
               selectedBooks.length > 1 ? "s" : ""
-            } added.`
-          : "No books selected yet."}
+            } loaded.`
+          : "No books loaded yet."}
       </p>
     </div>
   );
 }
 
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-
-function ChatBot() {
+function ChatBot({ selectedBooks }) {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
-  const [typed, setTyped] = useState(0);
 
-  const answer = selectedQuestion?.answer ?? "";
-  const isTyping = selectedQuestion !== null && typed < answer.length;
-
-  // Pick a prompt: reset the stream to the top (or straight to the full
-  // answer for anyone who asked for reduced motion).
-  function askQuestion(question) {
-    setSelectedQuestion(question);
-    setTyped(prefersReducedMotion() ? question.answer.length : 0);
-  }
-
-  // Reveal the answer one character at a time, like a chat streaming in.
-  useEffect(() => {
-    if (!isTyping) return;
-    const tick = setTimeout(() => setTyped((n) => n + 1), 18);
-    return () => clearTimeout(tick);
-  }, [isTyping, typed]);
+  // Loaded books, kept in the display order of the shelf.
+  const loaded = BOOKS.filter((book) => selectedBooks.includes(book.title));
 
   return (
     <div className="smoke-step">
       <StepHeader
         number="2"
         title="Ask LorelAi"
-        hint="Pick a question to see a grounded, cited answer."
+        hint="Pick a question to see a grounded answer cited to each loaded book."
       />
 
       <div className="smoke-prompts">
@@ -169,7 +169,7 @@ function ChatBot() {
             className={`smoke-prompt${
               selectedQuestion?.id === q.id ? " is-active" : ""
             }`}
-            onClick={() => askQuestion(q)}
+            onClick={() => setSelectedQuestion(q)}
           >
             {q.question}
           </button>
@@ -189,39 +189,86 @@ function ChatBot() {
         </div>
 
         <div className="ai-demo__body">
-          {selectedQuestion ? (
-            <div className="smoke-chat__thread" key={selectedQuestion.id}>
-              <div className="ai-demo__row ai-demo__row--user">
-                <span className="ai-demo__who">you</span>
-                <p className="ai-demo__bubble">{selectedQuestion.question}</p>
-              </div>
-
-              <div className="ai-demo__row ai-demo__row--ai">
-                <span className="ai-demo__who ai-demo__who--ai">lorelai</span>
-                <p className="ai-demo__bubble ai-demo__bubble--ai">
-                  {answer.slice(0, typed)}
-                  {isTyping && <span className="ai-demo__caret" />}
-                </p>
-              </div>
-
-              {!isTyping && (
-                <div className="smoke-chat__sources">
-                  <span className="smoke-chat__sources-label">Cited from</span>
-                  {selectedQuestion.sources.map((source) => (
-                    <span key={source} className="ai-demo__cite">
-                      {source}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
+          {selectedBooks.length === 0 ? (
+            <p className="smoke-chat__empty">
+              Load at least one book in step 1 to start asking.
+            </p>
+          ) : !selectedQuestion ? (
             <p className="smoke-chat__empty">
               Select a question above to generate a response.
             </p>
+          ) : (
+            <AnswerStream
+              // Remount (and restart the stream) whenever the question or the
+              // set of loaded books changes.
+              key={`${selectedQuestion.id}::${loaded
+                .map((b) => b.title)
+                .join("|")}`}
+              question={selectedQuestion}
+              books={loaded}
+            />
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function AnswerStream({ question, books }) {
+  const answers = books.map((book) => ({
+    book: book.title,
+    text: question.answers[book.title],
+  }));
+
+  const reduced = prefersReducedMotion();
+  // index = which answer is currently streaming; once it reaches answers.length
+  // every answer is fully typed. Reduced motion jumps straight to the end.
+  const [index, setIndex] = useState(reduced ? answers.length : 0);
+  const [chars, setChars] = useState(0);
+
+  useEffect(() => {
+    if (index >= answers.length) return;
+    const current = answers[index];
+    if (chars < current.text.length) {
+      const tick = setTimeout(() => setChars((n) => n + 1), 18);
+      return () => clearTimeout(tick);
+    }
+    // Current answer finished — move to the next after a short beat.
+    const next = setTimeout(() => {
+      setIndex((i) => i + 1);
+      setChars(0);
+    }, 520);
+    return () => clearTimeout(next);
+  }, [answers, index, chars]);
+
+  return (
+    <div className="smoke-chat__thread">
+      <div className="ai-demo__row ai-demo__row--user">
+        <span className="ai-demo__who">you</span>
+        <p className="ai-demo__bubble">{question.question}</p>
+      </div>
+
+      {answers.map((answer, i) => {
+        if (i > index) return null; // not started yet
+        const complete = i < index || chars >= answer.text.length;
+        const shown = complete ? answer.text : answer.text.slice(0, chars);
+        const typing = i === index && !complete;
+        return (
+          <div key={answer.book} className="ai-demo__row ai-demo__row--ai">
+            <span className="ai-demo__who ai-demo__who--ai">lorelai</span>
+            <p className="ai-demo__bubble ai-demo__bubble--ai">
+              {shown}
+              {typing && <span className="ai-demo__caret" />}
+            </p>
+            {complete && (
+              <div className="smoke-chat__sources">
+                <span className="smoke-chat__sources-label">Cited from</span>
+                <span className="ai-demo__cite">{answer.book}</span>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

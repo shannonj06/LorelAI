@@ -103,6 +103,25 @@
   max-width: 520px;
 }
 
+/* Outlined (border-only) waitlist button in the hero */
+.hero-form button {
+  font-weight: 400;
+  color: var(--accent);
+  background: none;
+  border: 1.5px solid var(--accent);
+}
+
+.hero-form button:hover {
+  background: var(--accent);
+  color: var(--button-text);
+}
+
+.hero-form button:disabled {
+  background: none;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
 .hero-subtitle {
   margin: 0;
   font-size: 11px;

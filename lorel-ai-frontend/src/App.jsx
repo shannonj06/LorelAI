@@ -14,7 +14,7 @@ function App() {
   if (page === "smoke") {
     return (
       <>
-        <Navbar />
+        <Navbar onOpenDemo={() => setPage("smoke")} />
         <SmokeMirrors onBack={() => setPage("home")} />
         <Footer />
       </>
@@ -23,8 +23,8 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <HomePage onOpenSmokeMirrors={() => setPage("smoke")} />
+      <Navbar onOpenDemo={() => setPage("smoke")} />
+      <HomePage />
       <Guarantees />
       <Pipeline />
       <PaperPage />

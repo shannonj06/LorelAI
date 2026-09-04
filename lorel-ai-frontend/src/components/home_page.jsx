@@ -1,7 +1,7 @@
 import { useWaitlist } from "../lib/useWaitlist";
 import AiDemo from "./ai_demo";
 
-function HomePage({ onOpenSmokeMirrors }) {
+function HomePage() {
   const { email, setEmail, status, message, submit } = useWaitlist();
 
   return (
@@ -45,14 +45,6 @@ function HomePage({ onOpenSmokeMirrors }) {
         <p className="hero-subtitle">
           FREE TO JOIN · CITED TO THE PAGE · LICENSED SOURCES ONLY
         </p>
-
-        <button
-          type="button"
-          className="hero-secondary"
-          onClick={onOpenSmokeMirrors}
-        >
-          Try the live demo →
-        </button>
       </div>
 
       <div className="hero-demo">

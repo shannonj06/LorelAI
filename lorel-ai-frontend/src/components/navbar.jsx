@@ -1,6 +1,6 @@
 import logo from "../assets/lorelai_logo_transparent.svg";
 
-function Navbar() {
+function Navbar({ onOpenDemo }) {
   function scrollToWaitlist() {
     const section = document.getElementById("waitlist");
     if (!section) return;
@@ -17,6 +17,9 @@ function Navbar() {
       <div className="nav-links">
         <a href="#how-it-works">How it works</a>
         <a href="#difference">Why it's different</a>
+        <button type="button" className="nav-demo" onClick={onOpenDemo}>
+          Live demo →
+        </button>
         <button onClick={scrollToWaitlist}>Join Waitlist</button>
       </div>
     </nav>
