@@ -790,3 +790,288 @@
     transition: none;
   }
 }
+
+/* ==========================================================================
+   Smoke & mirrors — interactive demo page
+   ========================================================================== */
+.smoke {
+  padding: 40px 24px 96px;
+}
+
+.smoke-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.smoke .back-link {
+  display: inline-block;
+}
+
+.smoke .big_heading {
+  margin-bottom: 14px;
+}
+
+.smoke .section-lede {
+  margin: 0 auto 44px;
+}
+
+/* --- step card --- */
+.smoke-step {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 18px;
+  padding: 28px 28px 30px;
+  box-shadow:
+    0 1px 2px rgba(46, 42, 46, 0.04),
+    0 18px 44px -26px rgba(107, 74, 134, 0.3);
+}
+
+.smoke-step + .smoke-step {
+  margin-top: 26px;
+}
+
+.smoke-step__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.smoke-step__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--button-text);
+  background: var(--accent);
+}
+
+.smoke-step__title {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.6vw, 26px);
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 0;
+}
+
+.smoke-step__hint {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--label);
+  margin: 3px 0 0;
+}
+
+/* --- book picker --- */
+.smoke-books {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.smoke-book {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 16px 14px 18px;
+  background: rgba(233, 228, 238, 0.28);
+  border: 1px solid var(--panel-line-soft);
+  border-radius: 14px;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.smoke-book:hover {
+  transform: translateY(-2px);
+  border-color: rgba(107, 74, 134, 0.25);
+}
+
+.smoke-book.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.smoke-book__cover {
+  position: relative;
+  display: block;
+}
+
+.smoke-book__cover img {
+  width: 108px;
+  height: 152px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px -10px rgba(46, 42, 46, 0.5);
+  opacity: 0.62;
+  transition: opacity 0.2s ease;
+}
+
+.smoke-book.is-selected .smoke-book__cover img {
+  opacity: 1;
+}
+
+.smoke-book__check {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 12px;
+  color: var(--button-text);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--panel);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.smoke-book.is-selected .smoke-book__check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.smoke-book__title {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.smoke-book__author {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--label);
+  opacity: 0.75;
+}
+
+.smoke-books__status {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--label);
+  margin: 18px 0 0;
+}
+
+/* --- prompt chips --- */
+.smoke-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.smoke-prompt {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: rgba(233, 228, 238, 0.32);
+  border: 1px solid var(--panel-line-soft);
+  border-radius: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.smoke-prompt:hover {
+  border-color: rgba(107, 74, 134, 0.28);
+}
+
+.smoke-prompt.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* --- chat card --- */
+.smoke-chat .ai-demo__body {
+  min-height: 0;
+}
+
+.smoke-chat__empty {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--label);
+  opacity: 0.75;
+  margin: 0;
+  padding: 22px 0;
+  text-align: center;
+}
+
+.smoke-chat__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: lorel-chip-in 0.3s ease both;
+}
+
+.smoke-chat__sources {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.smoke-chat__sources-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--label);
+  opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .smoke-books {
+    grid-template-columns: 1fr;
+  }
+
+  .smoke-book {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 14px;
+  }
+
+  .smoke-book__cover img {
+    width: 64px;
+    height: 90px;
+  }
+
+  .smoke-step {
+    padding: 22px 18px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smoke-book,
+  .smoke-book__cover img,
+  .smoke-book__check,
+  .smoke-prompt {
+    transition: none;
+  }
+
+  .smoke-chat__thread {
+    animation: none;
+  }
+}

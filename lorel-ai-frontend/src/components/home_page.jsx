@@ -1,7 +1,7 @@
 import { useWaitlist } from "../lib/useWaitlist";
 import AiDemo from "./ai_demo";
 
-function HomePage() {
+function HomePage({ onOpenSmokeMirrors }) {
   const { email, setEmail, status, message, submit } = useWaitlist();
 
   return (
@@ -17,6 +17,7 @@ function HomePage() {
           <br />
           <span>can't make things up.</span>
         </h1>
+
 
         <p className="hero-lede">
           Ask anything about raising your kid. Every answer is generated only
@@ -44,6 +45,14 @@ function HomePage() {
         <p className="hero-subtitle">
           FREE TO JOIN · CITED TO THE PAGE · LICENSED SOURCES ONLY
         </p>
+
+        <button
+          type="button"
+          className="hero-secondary"
+          onClick={onOpenSmokeMirrors}
+        >
+          See how it works →
+        </button>
       </div>
 
       <div className="hero-demo">
