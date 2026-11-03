@@ -34,7 +34,7 @@ for start in range(0, len(chunks), BATCH_SIZE):
         {
             "book_id": record["book_id"],
             "title": record["title"],
-            "author": record["Author"],
+            "author": record["author"],
             "year": record["year"],
             "page": record["page"]
         }

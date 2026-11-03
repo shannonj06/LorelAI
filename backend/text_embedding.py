@@ -36,7 +36,7 @@ def process_books(book_pages):
                 "chunk_id": f"{page_data['book_id']}_p{page_data['page']}_c{i}",
                 "book_id": page_data["book_id"],
                 "title": page_data["title"],
-                "Author": page_data["Author"],
+                "author": page_data["author"],
                 "year": page_data["year"],
                 "page": page_data["page"],
                 "text": chunk
@@ -49,7 +49,7 @@ def process_books(book_pages):
 if __name__ == "__main__":
     all_chunks = []
     #looks through every .jsonl file in books clean folder
-    for book_path in SRC_DIR.glob("*.jsnol"):
+    for book_path in SRC_DIR.glob("*.jsonl"):
         book_pages = []
         with open(book_path, "r", encoding="utf-8") as f:
             #goes record by record
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 if line.strip():
                     page_data = json.loads(line)
                     book_pages.append(page_data)
-                book_chunks = process_books(book_pages)
+        book_chunks = process_books(book_pages)
 
         # Add this book's chunks to the full collection
         all_chunks.extend(book_chunks)
