@@ -1,16 +1,29 @@
-# React + Vite
+# LorelAI website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + Vite. One app covers four screens:
 
-Currently, two official plugins are available:
+- the landing page, with a live demo of 3 free questions;
+- Try it now (sign up / sign in);
+- the app (chat, saved chats, library, your uploaded books);
+- admin.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Setup and the full picture: [../README.md](../README.md). Design decisions: [../DESIGN_PROCESS.md](../DESIGN_PROCESS.md).
 
-## React Compiler
+```bash
+npm install
+npm run dev      # http://localhost:5173; proxies /api to the API on :4000 (start it with `npm start` in ../api)
+npm run build    # dist/, which the API serves at http://127.0.0.1:4000
+npm run lint
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+`.env.local` holds `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, which only the waitlist form uses.
+Without them, the waitlist form shows a friendly message and the rest of the site works normally.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+src/main.jsx, App.jsx        entry point; routes: / · /try · /app · /app/chats/:id · /admin
+src/index.css, ai.css        the original landing-page design (tokens, hero, demo window, sections)
+src/product.css              everything new, built from the same tokens
+src/lib/                     api (fetch + session refresh), auth, router, text helpers, waitlist
+src/components/              landing sections, live_demo, answer (chips, trace, receipt), source_panel, icons
+src/pages/                   landing, try_page, app/ (app_page, sidebar, chat_pane, upload_dialog), admin_page
+```

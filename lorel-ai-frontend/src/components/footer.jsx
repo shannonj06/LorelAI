@@ -1,4 +1,5 @@
 import logo from "../assets/lorelai_logo_transparent.svg";
+import { Link } from "../lib/router";
 
 function Footer() {
   return (
@@ -16,15 +17,28 @@ function Footer() {
 
       <div className="footer-column">
         <h3>Product</h3>
-        <a href="#how-it-works">How it works</a>
-        <a href="#difference">Why it's different</a>
-        <a href="#waitlist">Join the waitlist</a>
+        <Link to="/#how-it-works">How it works</Link>
+        <Link to="/#difference">Why it's different</Link>
+        <Link to="/#demo">Live demo</Link>
+        <Link to="/try">Try it now</Link>
+      </div>
+
+      <div className="footer-column">
+        <h3>Account</h3>
+        <Link to="/try?mode=signin">Sign in</Link>
+        <Link to="/try?mode=signup">Create an account</Link>
+        <Link to="/#waitlist">Join the waitlist</Link>
       </div>
 
       <div className="footer-column">
         <h3>For publishers</h3>
-        <a href="#waitlist">License your catalog</a>
+        <Link to="/#waitlist">License your catalog</Link>
       </div>
+
+      <p className="footer-legal">
+        The demo library is four public-domain parenting books (1878–1916). Their
+        advice reflects their era and is not medical guidance.
+      </p>
     </footer>
   );
 }

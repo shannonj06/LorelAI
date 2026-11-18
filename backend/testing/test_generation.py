@@ -86,7 +86,7 @@ def test_supported_answer():
 
     assert result.status == "answered"
     assert result.error is None
-    assert "ten days old, once the cord has come off. [S1]" in result.answer
+    assert "ten days old, once the cord has come off. [Holt 1894, p. 2]" in result.answer
     assert len(client.calls) == 1
     assert [s["id"] for s in result.sources] == ["S1"]
     source = result.sources[0]
@@ -123,10 +123,11 @@ def test_empty_retrieval_makes_no_call(passages):
 
 
 def test_empty_retrieval_needs_no_api_client(monkeypatch):
-    def no_client(*args, **kwargs):
-        raise AssertionError("client should not be created")
+    def no_provider(*args, **kwargs):
+        raise AssertionError("no model provider should be created")
 
-    monkeypatch.setattr(generation.anthropic, "Anthropic", no_client)
+    monkeypatch.setattr(generation.llm, "default_provider", no_provider)
+    monkeypatch.setattr(generation.llm.anthropic, "Anthropic", no_provider)
 
     assert generate_answer("How should infants be fed?", []).answer == INSUFFICIENT_MESSAGE
 
@@ -197,7 +198,12 @@ def test_conflicting_passages():
     result = generate_answer("How often should a 3-month-old eat?", [FEEDING, FEEDING_OTHER], client=client)
 
     assert result.status == "answered"
-    assert "The passages disagree: The passages give different feeding intervals for a three-month-old. [S1][S2]" in result.answer
+    assert "every three hours during the day. [Holt 1894, p. 40]" in result.answer
+    assert "every two hours. [Chavasse 1878, p. 12]" in result.answer
+    assert (
+        "The books differ: The passages give different feeding intervals for a three-month-old. "
+        "[Holt 1894, p. 40; Chavasse 1878, p. 12]"
+    ) in result.answer
     assert {s["author"] for s in result.sources} == {"L. Emmett Holt", "Pye Henry Chavasse"}
 
 
@@ -391,3 +397,114 @@ def test_request_uses_structured_output():
 def test_empty_question(question):
     with pytest.raises(ValueError):
         generate_answer(question, [BATH], client=FakeClient())
+
+
+# Test 11: [Book, p.X] citations and the API response shape
+@pytest.mark.parametrize(
+    "author, year, expected",
+    [
+        ("L. Emmett Holt", 1894, "Holt 1894"),
+        ("Pye Henry Chavasse", 1878, "Chavasse 1878"),
+        ("Mary L. Read", 1916, "Read 1916"),
+        ("William S. & Lena K. Sadler", 1916, "Sadler 1916"),
+        ("Daniel J. Siegel and Tina Payne Bryson", 2011, "Siegel & Bryson 2011"),
+        ("A. Smith; B. Jones; C. Brown", None, "Smith et al."),
+        ("John Doe, M.D.", 1900, "Doe 1900"),
+    ],
+)
+def test_short_book_name(author, year, expected):
+    assert generation.short_book_name({"author": author, "year": year}) == expected
+
+
+def test_citation_label_falls_back_to_title_and_omits_missing_page():
+    assert generation.citation_label({"title": "Untitled Manual", "page": 7}) == "Untitled Manual, p. 7"
+    assert generation.citation_label({"author": "L. Emmett Holt", "year": 1894}) == "Holt 1894"
+
+
+def test_two_chunks_of_one_page_share_a_label():
+    second_chunk = passage("holt_1894_p2_c1", "the room should be warm; if possible there should be an open fire.", page=2)
+    client = FakeClient(reply(statements=[("The bath room should be warm.", ["S1", "S2"])]))
+
+    result = generate_answer("How should a bath be given?", [BATH, second_chunk], client=client)
+
+    assert "The bath room should be warm. [Holt 1894, p. 2]" in result.answer
+
+
+def test_conflict_within_one_book_is_not_called_a_book_difference():
+    later = passage("holt_1894_p41_c0", "an infant of three months should be fed every four hours.", page=41)
+    client = FakeClient(reply(
+        statements=[("Feed every three hours.", ["S1"]), ("Feed every four hours.", ["S2"])],
+        conflicts=[("The passages give different intervals.", ["S1", "S2"])],
+    ))
+
+    result = generate_answer("How often should a 3-month-old eat?", [FEEDING, later], client=client)
+
+    assert "The passages disagree: The passages give different intervals. [Holt 1894, p. 40; Holt 1894, p. 41]" in result.answer
+
+
+def test_api_response_has_answer_and_citations():
+    client = FakeClient(reply(
+        statements=[
+            ("One book advises feeding every three hours during the day.", ["S1"]),
+            ("Another advises every two hours.", ["S2"]),
+        ],
+        conflicts=[("The books give different feeding intervals.", ["S1", "S2"])],
+    ))
+
+    response = generation.to_api_response(
+        generate_answer("How often should a 3-month-old eat?", [FEEDING, FEEDING_OTHER], client=client)
+    )
+
+    assert json.loads(json.dumps(response)) == response  # JSON-serializable
+    assert response["status"] == "answered"
+    assert response["error"] is None
+    assert "[Holt 1894, p. 40]" in response["answer"]
+    assert [c["id"] for c in response["citations"]] == ["S1", "S2"]
+    first = response["citations"][0]
+    assert first["label"] == "Holt 1894, p. 40"
+    assert first["title"] == "The Care and Feeding of Children"
+    assert first["chunk_id"] == "holt_1894_p40_c0"
+    assert first["page"] == 40
+    assert first["text"].startswith("an infant of three months")
+    assert response["statements"][1] == {"text": "Another advises every two hours.", "citation_ids": ["S2"]}
+    assert response["conflicts"][0]["citation_ids"] == ["S1", "S2"]
+    assert response["not_covered"] == []
+
+
+def test_api_response_for_errors_has_no_citations():
+    client = FakeClient(raw_reply("", stop_reason="refusal"))
+
+    response = generation.to_api_response(generate_answer("When can I bathe my baby?", [BATH], client=client))
+
+    assert response["status"] == "error"
+    assert response["error"] == "refusal"
+    assert response["citations"] == []
+
+
+def test_prompt_asks_for_synthesis_across_books():
+    client = FakeClient(reply(status="insufficient"))
+
+    generate_answer("How often should a 3-month-old eat?", [FEEDING, FEEDING_OTHER], client=client)
+
+    call = client.calls[0]
+    assert "synthesize across them" in call["system"]
+    prompt = user_prompt(call)
+    assert 'author="L. Emmett Holt"' in prompt and 'author="Pye Henry Chavasse"' in prompt
+
+
+def test_missing_credentials_is_a_service_error():
+    client = FakeClient(TypeError(
+        '"Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set."'
+    ))
+
+    result = generate_answer("When can I bathe my baby?", [BATH], client=client)
+
+    assert result.status == "error"
+    assert result.error == "service_error"
+
+
+def test_other_type_errors_are_not_hidden():
+    client = FakeClient(TypeError("unsupported operand type(s)"))
+
+    with pytest.raises(TypeError):
+        generate_answer("When can I bathe my baby?", [BATH], client=client)

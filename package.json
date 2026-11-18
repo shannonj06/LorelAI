@@ -1,0 +1,16 @@
+{
+  "name": "lorelai",
+  "private": true,
+  "description": "LorelAI: answers from parenting books, every claim cited to the page",
+  "scripts": {
+    "setup": "npm --prefix api install && npm --prefix lorel-ai-frontend install",
+    "build": "npm --prefix lorel-ai-frontend run build",
+    "start": "npm --prefix api start",
+    "dev:api": "npm --prefix api run dev",
+    "dev:web": "npm --prefix lorel-ai-frontend run dev",
+    "test": "npm --prefix api test",
+    "lint": "npm --prefix lorel-ai-frontend run lint",
+    "smoke": "npm --prefix api run smoke",
+    "create-admin": "npm --prefix api run create-admin --"
+  }
+}

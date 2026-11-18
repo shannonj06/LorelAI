@@ -1,0 +1,14 @@
+# RAG pipeline (retrieval, generation, rag_worker.py used by the Express API)
+# Versions match the environment the pipeline and its tests were last run with.
+# OpenRouter (the default model provider) needs no package: llm.py uses the standard library.
+anthropic==2.4.0
+chromadb==1.5.9
+sentence-transformers==6.2.0
+transformers==5.22.1
+torch==2.15.0
+# Text extraction for uploaded PDFs (ingest.py)
+pypdf==6.21.4
+
+# Tests
+pytest==9.1.1
+httpx2==2.16.0

@@ -9,6 +9,11 @@ export function useWaitlist(){
 
     async function submit(e){
         e.preventDefault();
+        if (!supabase) {
+            setStatus("error");
+            setMessage("The waitlist is unavailable right now. You can create a free account instead.");
+            return;
+        }
         setStatus("loading");
         setMessage("");
 

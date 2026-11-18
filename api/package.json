@@ -1,0 +1,29 @@
+{
+  "name": "lorelai-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LorelAI HTTP API: accounts, admin, and POST /api/ask over the Python RAG pipeline",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch-path=src src/server.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "create-admin": "node scripts/create-admin.js",
+    "smoke": "node scripts/smoke.js"
+  },
+  "dependencies": {
+    "cors": "2.8.6",
+    "express": "5.3.0",
+    "express-rate-limit": "8.7.3",
+    "helmet": "8.3.0",
+    "jsonwebtoken": "9.0.3",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "supertest": "7.3.1"
+  }
+}

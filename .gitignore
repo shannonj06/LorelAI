@@ -11,3 +11,10 @@ node_modules/
 # Build output
 dist/
 build/
+
+# Python
+__pycache__/
+.pytest_cache/
+
+# Readers' uploaded books (vector store) and uploaded files: private, never commit
+backend/uploads_db/

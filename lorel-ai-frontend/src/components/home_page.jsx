@@ -1,7 +1,8 @@
 import { useWaitlist } from "../lib/useWaitlist";
-import AiDemo from "./ai_demo";
+import { Link } from "../lib/router";
+import LiveDemo from "./live_demo";
 
-function HomePage() {
+function HomePage({ demoInputRef }) {
   const { email, setEmail, status, message, submit } = useWaitlist();
 
   return (
@@ -33,6 +34,7 @@ function HomePage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={status === "loading"}
+            aria-label="Email for the waitlist"
           />
           <button type="submit" disabled={status === "loading"}>
             {status === "loading" ? "Joining..." : "Join Waitlist"}
@@ -45,13 +47,16 @@ function HomePage() {
         <p className="hero-subtitle">
           FREE TO JOIN · CITED TO THE PAGE · LICENSED SOURCES ONLY
         </p>
+        <p className="hero-try">
+          Don&rsquo;t want to wait? <Link to="/try">Try it now, free →</Link>
+        </p>
       </div>
 
       <div className="hero-demo">
-        <AiDemo />
+        <LiveDemo inputRef={demoInputRef} />
         <p className="hero-demo__caption">
-          A live pass through the answer loop — retrieval, grounded generation,
-          and the citation check that runs before a parent sees a word.
+          Live, not a recording: ask the real answer engine. Retrieval, grounded
+          generation and the citation check all run before you see a word.
         </p>
       </div>
     </section>

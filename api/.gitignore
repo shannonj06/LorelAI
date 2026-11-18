@@ -1,0 +1,5 @@
+# SQLite database files (created on first run)
+data/
+*.db
+*.db-shm
+*.db-wal

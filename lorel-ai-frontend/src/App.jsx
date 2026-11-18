@@ -1,36 +1,25 @@
-import { useState } from "react";
-import Navbar from "./components/navbar";
-import HomePage from "./components/home_page";
-import Guarantees from "./components/guarantees";
-import Pipeline from "./components/pipeline";
-import PaperPage from "./components/paper_page";
-import Difference from "./components/difference";
-import Footer from "./components/footer";
-import SmokeMirrors from "./components/smoke_mirrors";
+import { AuthProvider } from "./lib/auth";
+import { RouterProvider, useRouter } from "./lib/router";
+import AdminPage from "./pages/admin_page";
+import AppPage from "./pages/app/app_page";
+import Landing from "./pages/landing";
+import TryPage from "./pages/try_page";
+
+function Routes() {
+  const { path } = useRouter();
+  if (path === "/try") return <TryPage />;
+  if (path === "/app" || path.startsWith("/app/")) return <AppPage />;
+  if (path === "/admin") return <AdminPage />;
+  return <Landing />;
+}
 
 function App() {
-  const [page, setPage] = useState("home");
-
-  if (page === "smoke") {
-    return (
-      <>
-        <Navbar onOpenDemo={() => setPage("smoke")} />
-        <SmokeMirrors onBack={() => setPage("home")} />
-        <Footer />
-      </>
-    );
-  }
-
   return (
-    <>
-      <Navbar onOpenDemo={() => setPage("smoke")} />
-      <HomePage />
-      <Guarantees />
-      <Pipeline />
-      <PaperPage />
-      <Difference />
-      <Footer />
-    </>
+    <RouterProvider>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </RouterProvider>
   );
 }
 

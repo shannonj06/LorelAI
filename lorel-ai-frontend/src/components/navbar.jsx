@@ -1,26 +1,54 @@
 import logo from "../assets/lorelai_logo_transparent.svg";
+import { useAuth } from "../lib/auth";
+import { Link, useRouter } from "../lib/router";
 
-function Navbar({ onOpenDemo }) {
-  function scrollToWaitlist() {
-    const section = document.getElementById("waitlist");
-    if (!section) return;
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
-    // Drop the cursor into the email field once we're there.
-    section.querySelector("input")?.focus({ preventScroll: true });
+function Navbar({ onFocusDemo }) {
+  const { status } = useAuth();
+  const { path, navigate } = useRouter();
+  const onHome = path === "/";
+
+  // On the landing page, section links scroll; elsewhere they navigate to "/#section"
+  function goToSection(event, id) {
+    if (!onHome) return;
+    event.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", `#${id}`);
+  }
+
+  function openDemo() {
+    if (!onHome) {
+      navigate("/#demo");
+      return;
+    }
+    document.getElementById("demo")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Drop the cursor into the question box once we're there.
+    onFocusDemo?.();
   }
 
   return (
     <nav className="navbar">
-      <div className="logo">
+      <Link to="/" className="logo" aria-label="LorelAI home">
         <img src={logo} alt="LorelAI" />
-      </div>
+      </Link>
       <div className="nav-links">
-        <a href="#how-it-works">How it works</a>
-        <a href="#difference">Why it's different</a>
-        <button type="button" className="nav-demo" onClick={onOpenDemo}>
+        <Link to="/#how-it-works" onClick={(event) => goToSection(event, "how-it-works")}>
+          How it works
+        </Link>
+        <Link to="/#difference" onClick={(event) => goToSection(event, "difference")}>
+          Why it's different
+        </Link>
+        <button type="button" className="nav-demo" onClick={openDemo}>
           Live demo →
         </button>
-        <button onClick={scrollToWaitlist}>Join Waitlist</button>
+        {status === "signedIn" ? (
+          <Link className="nav-cta" to="/app">
+            Open app →
+          </Link>
+        ) : (
+          <Link className="nav-cta" to="/try">
+            Try it now
+          </Link>
+        )}
       </div>
     </nav>
   );

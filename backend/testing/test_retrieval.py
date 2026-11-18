@@ -90,3 +90,69 @@ def test_empty_question():
 def test_invalid_k(k):
     with pytest.raises(ValueError):
         retrieve("How should infants be fed?", k=k)
+
+
+# Test 8: Multi-book retrieval
+from retrieval import list_books, retrieve_across_books
+
+
+def test_list_books():
+    books = list_books()
+
+    assert len(books) >= 2
+    assert [b["book_id"] for b in books] == sorted(b["book_id"] for b in books)
+    assert sum(b["chunks"] for b in books) == collection.count()
+    for book in books:
+        assert book["title"] and book["author"] and book["year"]
+
+
+def test_across_books_covers_every_book_that_discusses_the_topic():
+    # Every book in the library discusses infant feeding
+    results = retrieve_across_books("How should infants be fed?")
+
+    books_found = {r["metadata"]["book_id"] for r in results}
+    assert books_found == {b["book_id"] for b in list_books()}
+    assert len({r["chunk_id"] for r in results}) == len(results)
+    distances = [r["distance"] for r in results]
+    assert distances == sorted(distances)
+
+
+def test_across_books_finds_more_books_than_global_top_k():
+    question = "Is it good to rock a baby to sleep?"
+
+    global_books = {r["metadata"]["book_id"] for r in retrieve(question, k=3)}
+    across_books = {r["metadata"]["book_id"] for r in retrieve_across_books(question, k=3)}
+
+    assert global_books < across_books
+
+
+def test_across_books_respects_limits():
+    results = retrieve_across_books("How should infants be fed?", k=3, per_book=3, max_passages=6)
+
+    assert len(results) <= 6
+    # Trimming keeps at least one passage from each book
+    assert len({r["metadata"]["book_id"] for r in results}) == len(list_books())
+
+
+def test_across_books_drops_off_topic_questions():
+    assert retrieve_across_books("What is the best car seat?") == []
+    # With the distance limit disabled, the nearest passages come back anyway
+    assert retrieve_across_books("What is the best car seat?", max_distance=None, margin=None)
+
+
+def test_book_filter():
+    results = retrieve_across_books("How should infants be fed?", book_ids=["holt_1894"])
+
+    assert results
+    assert {r["metadata"]["book_id"] for r in results} == {"holt_1894"}
+
+
+def test_unknown_book_is_rejected():
+    with pytest.raises(ValueError, match="Unknown book_ids"):
+        retrieve_across_books("How should infants be fed?", book_ids=["not_a_book"])
+
+
+def test_across_books_empty_and_invalid():
+    assert retrieve_across_books("   ") == []
+    with pytest.raises(ValueError):
+        retrieve_across_books("How should infants be fed?", per_book=0)
